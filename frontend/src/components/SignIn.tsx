@@ -5,9 +5,10 @@ import { useNavigate } from 'react-router-dom';
 export default function SignIn() {
     const navigate = useNavigate();
     const [data, setData] = useState({
-        email: '',
-        password: ''
+        email: 'test@gmail.com', // pre-filled test email
+        password: 'pasword123' // pre-filled test password
     });
+
   return (
     <>
     <div className="flex items-center justify-center min-h-screen ">
@@ -30,6 +31,7 @@ export default function SignIn() {
                     type="email" 
                     placeholder="test@gmail.com" 
                     aria-label="Email Address"  
+                    value={data.email}
                     onChange={(e)=>setData({...data,email:e.target.value})}
                 />
             </div>
@@ -38,8 +40,9 @@ export default function SignIn() {
                 <input 
                     className="block w-full px-4 py-3 mt-2 text-black placeholder-gray-400 bg-gray-50 border border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none transition-all duration-200" 
                     type="password" 
-                    placeholder="pasword123" 
+                    placeholder="password123" 
                     aria-label="Password" 
+                    value={data.password}
                     onChange={(e)=>setData({...data,password:e.target.value})} 
                 />
             </div>

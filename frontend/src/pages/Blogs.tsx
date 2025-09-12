@@ -64,9 +64,14 @@ export default function Blogs() {
         fetchBlogs();
     }, [navigate]);
 
+    // Helper to count words
+    const wordCount = (text: string) => text.trim().split(/\s+/).length;
+
     setTimeout(() => {
         setloader(false)
     }, 3000);
+    const filteredBlogs = blogs.filter(blog => wordCount(blog.content) >= 20);
+    filteredBlogs.reverse()
     return Loader ? (
         <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50">
             <div className="flex items-center scale-110 gap-3 justify-center h-screen">
@@ -95,7 +100,7 @@ export default function Blogs() {
                     </div>
                 )}
 
-                {blogs.length === 0 && !loading && !error ? (
+                {filteredBlogs.length === 0 && !loading && !error ? (
                     <div className="text-center py-16 bg-white rounded-lg shadow-md border border-blue-100">
                         <div className="text-blue-300 text-6xl mb-4">📝</div>
                         <h3 className="text-2xl font-bold text-gray-800 mb-2">No Stories Yet</h3>
@@ -109,7 +114,7 @@ export default function Blogs() {
                     </div>
                 ) : (
                     <div className="grid gap-6">
-                        {blogs.map((blog, index) => (
+                        {filteredBlogs.map((blog, index) => (
                             <div key={blog.key || `blog-${index}`} className="bg-white rounded-lg shadow-md border border-blue-100 hover:shadow-lg transition-shadow duration-200">
                                 <Content 
                                     url={blog.url}

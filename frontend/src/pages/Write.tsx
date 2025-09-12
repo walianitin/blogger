@@ -72,7 +72,7 @@ export default function Write() {
             if (response.status === 200 || response.status === 201) {
                 alert("Blog post created successfully!")
                 setBlogPost({ title: "", content: "" }) // Clear form
-                navigate("/")
+                navigate("/explore")
             }
         } catch (error) {
             console.error("Error creating blog post:", error)
