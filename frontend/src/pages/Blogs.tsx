@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Content from '../components/Content';
 import Header from '../components/Header';
-import { Skeleton } from '../components/ui/skeleton';
+import PostCardSkeleton from '../components/PostCardSkeleton';
 
 
 interface Author {
@@ -20,10 +20,19 @@ interface Blog {
 
 const backend_url = "https://backedn.walianitin406.workers.dev";
 
+// Single long dummy post shown to guests when API returns no posts
+const DUMMY_POSTS: Blog[] = [
+  {
+    title: "Why You Should Join Our Community",
+    content: "Everyone has a story worth telling. Here you can discover ideas from writers around the world, save your favorite posts, and share your own. Sign in to read this full article and unlock all stories. Our community is built for readers and writers who want to learn and grow. Whether you are just starting out or have been writing for years, you will find a place here. Join thousands of members who publish every day and connect over shared interests. We cannot wait to hear what you have to say.",
+    author: { name: "Blogger Team" },
+    url: "",
+  },
+];
+
 export default function Blogs() {
     const [blogs, setBlogs] = useState<Blog[]>([]);
     const [loading, setLoading] = useState(true);
-    const [Loader,setloader]=useState(true);
     const [error, setError] = useState('');
     const navigate = useNavigate();
 
@@ -52,8 +61,8 @@ export default function Blogs() {
                 const blogsData = response.data.posts || response.data.blogs || [];
                 setBlogs(Array.isArray(blogsData) ? blogsData : []);
             } catch (err) {
-                console.error('Error fetching blogs:', err);
-                setError('Failed to load blogs. Please try again.');
+                console.error("Error fetching blogs:", err);
+                setError("");
                 setBlogs([]);
             } finally {
                 setLoading(false);
@@ -63,24 +72,18 @@ export default function Blogs() {
         fetchBlogs();
     }, [navigate]);
 
-    setTimeout(() => {
-        setloader(false);
-    }, 3000);
-
     const wordCount = (text: string) => text.trim().split(/\s+/).filter(Boolean).length;
     const filteredBlogs = blogs.filter((blog) => wordCount(blog.content) >= 20);
     const sortedBlogs = [...filteredBlogs].reverse();
-    return Loader ? (
-        <div className="flex min-h-screen items-center justify-center bg-gradient-to-b from-slate-50 to-blue-50/30">
-            <div className="flex flex-col items-center gap-4">
-                <Skeleton className="h-12 w-12 rounded-full bg-slate-200" />
-                <div className="space-y-2 text-center">
-                    <Skeleton className="h-4 w-48 bg-slate-200" />
-                    <Skeleton className="h-4 w-32 bg-slate-200" />
-                </div>
-            </div>
-        </div>
-    ) : (
+    const isSignedIn = !!localStorage.getItem("authToken");
+
+    // For guests: if no posts from API, show dummy posts so they see something and "Read more" → signin
+    const postsToShow =
+      sortedBlogs.length > 0 ? sortedBlogs : !isSignedIn ? DUMMY_POSTS : [];
+
+    const SKELETON_COUNT = 4;
+
+    return (
         <div className="min-h-screen bg-gradient-to-b from-slate-50 via-blue-50/20 to-slate-50">
             <Header token={getAuthHeader()} />
             <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6">
@@ -98,7 +101,13 @@ export default function Blogs() {
                     </div>
                 )}
 
-                {sortedBlogs.length === 0 && !loading && !error ? (
+                {loading ? (
+                    <div className="space-y-4">
+                        {Array.from({ length: SKELETON_COUNT }).map((_, i) => (
+                            <PostCardSkeleton key={i} />
+                        ))}
+                    </div>
+                ) : postsToShow.length === 0 ? (
                     <div className="rounded-2xl border border-slate-200 bg-white p-12 text-center shadow-sm">
                         <div className="text-5xl opacity-60">📝</div>
                         <h3 className="mt-4 font-display text-xl font-bold text-slate-800">
@@ -117,7 +126,7 @@ export default function Blogs() {
                     </div>
                 ) : (
                     <div className="space-y-4">
-                        {sortedBlogs.map((blog, index) => (
+                        {postsToShow.map((blog, index) => (
                             <div
                                 key={blog.key ?? `blog-${index}`}
                                 className="overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-sm transition-shadow hover:shadow-md"
@@ -127,6 +136,7 @@ export default function Blogs() {
                                     author={blog.author?.name ?? "Unknown Author"}
                                     title={blog.title}
                                     content={blog.content}
+                                    isSignedIn={isSignedIn}
                                 />
                             </div>
                         ))}
