@@ -44,10 +44,9 @@ export default function Blogs() {
                 setLoading(true);
                 setError('');
                 const authHeader = getAuthHeader();
+                const token = authHeader ? authHeader.split(" ")[1] : undefined;
                 const response = await axios.get(`${backend_url}/api/v1/blog/bulk`, {
-                    headers: {
-                        Authorization: authHeader.split(" ")[1]
-                    }
+                    headers: token ? { Authorization: token } : {},
                 });
                 
                 const blogsData = response.data.posts || response.data.blogs || [];
@@ -64,61 +63,68 @@ export default function Blogs() {
         fetchBlogs();
     }, [navigate]);
 
-    // Helper to count words
-    const wordCount = (text: string) => text.trim().split(/\s+/).length;
-
     setTimeout(() => {
-        setloader(false)
+        setloader(false);
     }, 3000);
-    const filteredBlogs = blogs.filter(blog => wordCount(blog.content) >= 20);
-    filteredBlogs.reverse()
+
+    const wordCount = (text: string) => text.trim().split(/\s+/).filter(Boolean).length;
+    const filteredBlogs = blogs.filter((blog) => wordCount(blog.content) >= 20);
+    const sortedBlogs = [...filteredBlogs].reverse();
     return Loader ? (
-        <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50">
-            <div className="flex items-center scale-110 gap-3 justify-center h-screen">
-                <Skeleton className="h-12 w-12 rounded-full bg-blue-200" />
-                <div className="space-y-2">
-                    <Skeleton className="h-4 w-[250px] bg-blue-200" />
-                    <Skeleton className="h-4 w-[200px] bg-blue-200" />
+        <div className="flex min-h-screen items-center justify-center bg-gradient-to-b from-slate-50 to-blue-50/30">
+            <div className="flex flex-col items-center gap-4">
+                <Skeleton className="h-12 w-12 rounded-full bg-slate-200" />
+                <div className="space-y-2 text-center">
+                    <Skeleton className="h-4 w-48 bg-slate-200" />
+                    <Skeleton className="h-4 w-32 bg-slate-200" />
                 </div>
             </div>
         </div>
     ) : (
-        <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50">
-             <Header  token={getAuthHeader()}/>
-            <div className="max-w-6xl mx-auto px-4 py-8">
-                <div className="mb-8 text-center">
-                    <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-4">Explore Stories</h1>
-                    <p className="text-gray-600 text-lg">Discover amazing stories from our community</p>
+        <div className="min-h-screen bg-gradient-to-b from-slate-50 via-blue-50/20 to-slate-50">
+            <Header token={getAuthHeader()} />
+            <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6">
+                <div className="mb-10 text-center">
+                    <h1 className="font-display text-3xl font-bold text-slate-800 sm:text-4xl">
+                        Explore Stories
+                    </h1>
+                    <p className="mt-2 text-slate-600">Discover stories from our community</p>
                 </div>
 
                 {error && (
-                    <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg shadow-sm">
-                        <div className="flex items-center">
-                            <span className="text-red-500 mr-2">⚠️</span>
-                            {error}
-                        </div>
+                    <div className="mb-6 rounded-xl border border-red-200 bg-red-50 p-4 text-red-700">
+                        <span className="mr-2">⚠️</span>
+                        {error}
                     </div>
                 )}
 
-                {filteredBlogs.length === 0 && !loading && !error ? (
-                    <div className="text-center py-16 bg-white rounded-lg shadow-md border border-blue-100">
-                        <div className="text-blue-300 text-6xl mb-4">📝</div>
-                        <h3 className="text-2xl font-bold text-gray-800 mb-2">No Stories Yet</h3>
-                        <p className="text-gray-600 mb-8 max-w-md mx-auto">Be the first to share your story with the community and inspire others!</p>
-                        <button 
-                            onClick={() => navigate('/write')}
-                            className="px-8 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-200 shadow-lg hover:shadow-xl font-semibold"
+                {sortedBlogs.length === 0 && !loading && !error ? (
+                    <div className="rounded-2xl border border-slate-200 bg-white p-12 text-center shadow-sm">
+                        <div className="text-5xl opacity-60">📝</div>
+                        <h3 className="mt-4 font-display text-xl font-bold text-slate-800">
+                            No stories yet
+                        </h3>
+                        <p className="mx-auto mt-2 max-w-sm text-slate-600">
+                            Be the first to share your story.
+                        </p>
+                        <button
+                            type="button"
+                            onClick={() => navigate("/write")}
+                            className="mt-6 rounded-full bg-gradient-to-r from-blue-500 to-indigo-600 px-6 py-3 font-semibold text-white shadow-md hover:shadow-lg"
                         >
-                            Write Your Story
+                            Write your story
                         </button>
                     </div>
                 ) : (
-                    <div className="grid gap-6">
-                        {filteredBlogs.map((blog, index) => (
-                            <div key={blog.key || `blog-${index}`} className="bg-white rounded-lg shadow-md border border-blue-100 hover:shadow-lg transition-shadow duration-200">
-                                <Content 
+                    <div className="space-y-4">
+                        {sortedBlogs.map((blog, index) => (
+                            <div
+                                key={blog.key ?? `blog-${index}`}
+                                className="overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-sm transition-shadow hover:shadow-md"
+                            >
+                                <Content
                                     url={blog.url}
-                                    author={blog.author?.name || 'Unknown Author'}
+                                    author={blog.author?.name ?? "Unknown Author"}
                                     title={blog.title}
                                     content={blog.content}
                                 />
