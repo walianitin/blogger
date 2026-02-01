@@ -64,6 +64,7 @@ blogRouter.use('/*', async (c, next: any) => {
   } catch (err) {
     return c.json({
       message: 'error in the middleware',
+      errror:err
     })
   }
 })
@@ -122,6 +123,7 @@ blogRouter.get('/user_post', async c => {
     c.status(411) //
     return c.json({
       message: 'Error while fetching blog post',
+      error:e
     })
   }
 })
