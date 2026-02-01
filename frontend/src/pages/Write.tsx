@@ -83,73 +83,75 @@ export default function Write() {
         }
     }
 
-    return (<>
-             <Header token={getAuthHeader() as string}></Header>
-        <div className="min-h-screen bg-gradient-to-b from-white via-blue-100 to-white px-4 py-8">
-            <div className="max-w-4xl mx-auto bg-white-200 bg-transparent  opacity-90 items-center justify-center mt-20 rounded-md p-10 border-2 border-r-3 border-blue-200 ">
-               
-                <div className="mb-4">
-                    <h1 className="text-3xl font-thin text-gray-900 mb-2">
-                          New Story</h1>
-                    <p className="text-gray-600 font-extralight">Share your thoughts with the world</p>
-                </div>
-
-                {/* Title Input */}
-                <div className="mb-4">
-                    <input
-                        type="text"
-                        placeholder="Title"
-                        value={blogPost.title}
-                        onChange={(e) => setBlogPost(prev => ({ ...prev, title: e.target.value }))}
-                        className="w-full text-4xl font-bold placeholder-gray-400 bg-transparent border-none outline-none resize-none py-4 text-gray-900"
-                        style={{ border: 'none', boxShadow: 'none' }}
-                        />
-                </div>
-
-                {/* Content Textarea - Auto-expanding */}
-                <div className="mb-8">
-                    <textarea
-                        ref={textareaRef}
-                        placeholder="Tell your story..."
-                        value={blogPost.content}
-                        onChange={(e) => {
-                            setBlogPost(prev => ({ ...prev, content: e.target.value }))
-                            autoResize()
-                        }}
-                        className="w-full text-lg placeholder-gray-400 bg-transparent border-none outline-none resize-none py-4 text-gray-700 leading-relaxed overflow-hidden"
-                        style={{ 
-                            border: 'none', 
-                            boxShadow: 'none',
-                            minHeight: '200px',
-                            height: 'auto'
-                        }}
-                        rows={1}
-                        />
-                </div>
-
-                {/* Action Buttons */}
-                <div className="flex justify-between items-center">
-                    <button
-                        onClick={() => navigate("/")}
-                        className="px-6 py-2 text-gray-200 bg-[#3f3f46] rounded-full transition-colors duration-200"
-                        >
-                        Cancel
-                    </button>
-                    
-                    <button
-                        onClick={handleSubmit}
-                        disabled={isLoading || isSubmitting || !blogPost.title.trim() || !blogPost.content.trim()}
-                        className={`px-8 py-3 rounded-full font-medium transition-all duration-200 ${
-                            isLoading || isSubmitting || !blogPost.title.trim() || !blogPost.content.trim()
-                            ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                            : 'bg-blue-600 text-white hover:bg-blue-700 hover:scale-105 shadow-md hover:shadow-lg'
-                        }`}
-                        >
-                        {isLoading || isSubmitting ? 'Publishing...' : 'Publish'}
-                    </button>
-                </div>
+    return (
+      <>
+        <Header token={getAuthHeader() as string} />
+        <div className="min-h-screen bg-gradient-to-b from-slate-50 via-blue-50/20 to-slate-50 px-4 py-10">
+          <div className="mx-auto max-w-2xl rounded-2xl border border-slate-200/80 bg-white p-8 shadow-sm sm:p-10">
+            <div className="mb-8">
+              <h1 className="font-display text-2xl font-bold text-slate-800 sm:text-3xl">
+                New story
+              </h1>
+              <p className="mt-1 text-slate-600">Share your thoughts with the world</p>
             </div>
+
+            <div className="mb-6">
+              <input
+                type="text"
+                placeholder="Title"
+                value={blogPost.title}
+                onChange={(e) =>
+                  setBlogPost((prev) => ({ ...prev, title: e.target.value }))
+                }
+                className="w-full border-0 bg-transparent py-3 font-display text-2xl font-bold text-slate-900 outline-none placeholder:text-slate-400 sm:text-3xl"
+              />
+            </div>
+
+            <div className="mb-10">
+              <textarea
+                ref={textareaRef}
+                placeholder="Tell your story..."
+                value={blogPost.content}
+                onChange={(e) => {
+                  setBlogPost((prev) => ({ ...prev, content: e.target.value }));
+                  autoResize();
+                }}
+                className="min-h-[200px] w-full resize-none border-0 bg-transparent py-3 text-lg text-slate-700 outline-none placeholder:text-slate-400 leading-relaxed"
+                rows={1}
+              />
+            </div>
+
+            <div className="flex items-center justify-between gap-4 border-t border-slate-100 pt-6">
+              <button
+                type="button"
+                onClick={() => navigate("/")}
+                className="rounded-full bg-slate-200 px-5 py-2.5 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-300"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleSubmit}
+                disabled={
+                  isLoading ||
+                  isSubmitting ||
+                  !blogPost.title.trim() ||
+                  !blogPost.content.trim()
+                }
+                className={`rounded-full px-6 py-2.5 text-sm font-semibold transition-all ${
+                  isLoading ||
+                  isSubmitting ||
+                  !blogPost.title.trim() ||
+                  !blogPost.content.trim()
+                    ? "cursor-not-allowed bg-slate-200 text-slate-500"
+                    : "bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-md hover:shadow-lg"
+                }`}
+              >
+                {isLoading || isSubmitting ? "Publishing…" : "Publish"}
+              </button>
+            </div>
+          </div>
         </div>
-                        </>
-    )
+      </>
+    );
 }

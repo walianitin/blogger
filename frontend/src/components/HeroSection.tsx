@@ -1,12 +1,17 @@
-
-interface argument{
-    Avatar_url:string,
-    author_name:string
+interface HeroSectionProps {
+  Avatar_url: string;
+  author_name: string;
 }
-export default function Herosection({Avatar_url,author_name}:argument){
-    return <div className=" flex flex-row gap-1  items-center  justify-start text-xs  w-fit rounded-md font-black ">
-        <img src="/avatar.png" alt="pic"  height={30} width={30} className=" rounded-lg "/>
-        <p> {Avatar_url}</p>
-        <p >{author_name}</p>
+
+export default function HeroSection({ author_name }: HeroSectionProps) {
+  return (
+    <div className="flex items-center gap-3">
+      <img
+        src="/avatar.png"
+        alt=""
+        className="h-9 w-9 rounded-full object-cover ring-2 ring-slate-100"
+      />
+      <span className="text-sm font-medium text-slate-600">{author_name}</span>
     </div>
+  );
 }

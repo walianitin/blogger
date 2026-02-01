@@ -1,44 +1,47 @@
 import { useNavigate } from "react-router-dom";
 
-export default function HeaderHome(){
-    const Navigate=useNavigate();
-    return (
-        <div className="flex items-center justify-center">
-            <div className="flex flex-row items-center w-full px-10 justify-between py-4 rounded-lg">
-                
-                {/* Logo */}
-                <div className="flex items-center">
-                    <div className="flex items-center space-x-2 cursor-pointer hover:opacity-80 transition-opacity">
-                        <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
-                            <span className="text-white font-bold text-lg">B</span>
-                        </div>
-                        <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                            Blogger
-                        </h1>
-                    </div>
-                </div>
+export default function HeaderHome() {
+  const navigate = useNavigate();
+  return (
+    <header className="sticky top-0 z-40 border-b border-slate-200/80 bg-white/80 backdrop-blur-md">
+      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6">
+        <button
+          type="button"
+          onClick={() => navigate("/")}
+          className="flex items-center gap-2 rounded-lg transition-opacity hover:opacity-90"
+        >
+          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 shadow-sm">
+            <span className="font-display text-lg font-bold text-white">B</span>
+          </div>
+          <span className="font-display text-xl font-bold tracking-tight text-slate-800">
+            Blogger
+          </span>
+        </button>
 
-                {/* Navigation Buttons */}
-                <div className="flex items-center space-x-4">
-                    {/* Explore Button */}
-                    <button className="px-4 py-2 text-gray-700 hover:text-blue-600 hover:bg-gray-100 rounded-lg transition-colors duration-200" onClick={()=>Navigate("/explore")}>
-                        Explore
-                    </button>
-
-                    {/* Sign In Button */}
-                    <button className="px-4 py-2 text-gray-700 hover:text-blue-600 hover:bg-gray-100 rounded-lg transition-colors duration-200"  onClick={() => Navigate("/signin")}>
-                        Sign In
-                    </button>
-
-                    {/* Sign Up Button */}
-                    <button
-                        className="px-6 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-200 shadow-md hover:shadow-lg"
-                        onClick={() => Navigate("/signup")}
-                    >
-                        Sign Up
-                    </button>
-                </div>
-            </div>
-        </div>
-    )
+        <nav className="flex items-center gap-2 sm:gap-3">
+          <button
+            type="button"
+            onClick={() => navigate("/explore")}
+            className="rounded-lg px-4 py-2 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900"
+          >
+            Explore
+          </button>
+          <button
+            type="button"
+            onClick={() => navigate("/signin")}
+            className="rounded-lg px-4 py-2 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900"
+          >
+            Sign In
+          </button>
+          <button
+            type="button"
+            onClick={() => navigate("/signup")}
+            className="rounded-lg bg-gradient-to-r from-blue-500 to-indigo-600 px-5 py-2 text-sm font-semibold text-white shadow-sm transition-all hover:shadow-md"
+          >
+            Sign Up
+          </button>
+        </nav>
+      </div>
+    </header>
+  );
 }

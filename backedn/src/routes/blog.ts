@@ -18,6 +18,27 @@ export const blogRouter = new Hono<{
     userId: string
   }
 }>()
+
+// GET /bulk is public so Explore page can show all posts without login
+blogRouter.get('/bulk', async c => {
+  const prisma = new PrismaClient({
+    datasourceUrl: c.env.DATABASE_URL,
+  }).$extends(withAccelerate())
+  const posts = await prisma.post.findMany({
+    select: {
+      content: true,
+      title: true,
+      id: true,
+      author: {
+        select: {
+          name: true,
+        },
+      },
+    },
+  })
+  return c.json({ posts })
+})
+
 blogRouter.use('/*', async (c, next: any) => {
   const authHeader = c.req.header('Authorization') || ''
   console.log(c.req.header)
@@ -103,28 +124,6 @@ blogRouter.get('/user_post', async c => {
       message: 'Error while fetching blog post',
     })
   }
-})
-
-blogRouter.get('/bulk', async c => {
-  const prisma = new PrismaClient({
-    datasourceUrl: c.env.DATABASE_URL,
-  }).$extends(withAccelerate())
-  const posts = await prisma.post.findMany({
-    select: {
-      content: true,
-      title: true,
-      id: true,
-      author: {
-        select: {
-          name: true,
-        },
-      },
-    },
-  })
-
-  return c.json({
-    posts,
-  })
 })
 
 blogRouter.put('/update', async c => {

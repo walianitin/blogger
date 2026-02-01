@@ -1,131 +1,141 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { TfiWrite } from "react-icons/tfi";
 import { FaUser, FaBell, FaSearch, FaCog, FaSignOutAlt } from "react-icons/fa";
 
-export default function Header({token}:{token :string}) {
-    const [isProfileOpen, setIsProfileOpen] = useState(false);
-    const navigate = useNavigate();
+export default function Header({ token }: { token: string }) {
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const navigate = useNavigate();
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
-    const handleSignOut = () => {
-        localStorage.removeItem('authToken');
-        navigate('/');
-    };
-console.log(token)
-    const handleWriteClick = () => {
-        navigate('/write');
-    };
-console.log(token)
-    return (
-        <div className= "    flex items-center justify-center   ">
-    
-                <div className="flex flex-row items-center  w-full  px-10 justify-between  py-2 rounded-lg" >
-                 
-                    <div className="flex items-center space-x-4  ">
-                        <div 
-                            className="flex items-center space-x-2 cursor-pointer hover:opacity-80 transition-opacity"
-                            onClick={() => navigate('/')}
-                        >
-                            <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
-                                <span className="text-white font-bold text-lg">B</span>
-                            </div>
-                            <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                                Blogger
-                            </h1>
-                        </div>
-                    </div>
-                
-                    {/* Search Bar */}
-                    <div className="hidden md:flex items-center flex-1 max-w-lg mx-8 ">
-                        <div className="relative w-full">
-                            <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-                            <input
-                                type="text"
-                                placeholder="Search stories..."
-                                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50"
-                            />
-                        </div>
-                    </div>
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setIsProfileOpen(false);
+      }
+    }
+    document.addEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("click", handleClickOutside);
+  }, []);
 
-                    {/* Right Side Actions */}
-                    <div className="flex items-center space-x-4 ">
-                        {/* Write Button */}
-                        {token== undefined || token.length==0 ? (<button className='px-4 py-2 text-xs bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-200 shadow-lg hover:shadow-xl font-semibold' onClick={()=>navigate("/signin")}>Signin</button>):(  <button
-                            onClick={handleWriteClick}
-                            className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-full hover:from-blue-600 hover:to-blue-700 transition-all duration-200 shadow-md hover:shadow-lg"
-                        >
-                            <TfiWrite size={16} />
-                            <span className="hidden sm:inline">Write</span>
-                        </button>)}
-                      
+  const handleSignOut = () => {
+    localStorage.removeItem("authToken");
+    navigate("/");
+  };
 
-                        {/* Notifications */}
-                        <button className="p-2 text-gray-600 hover:text-blue-600 hover:bg-gray-100 rounded-full transition-colors duration-200">
-                            <FaBell size={18} />
-                        </button>
+  const isLoggedIn = token !== undefined && token.length > 0;
 
-                        {/* Profile Dropdown */}
-                        <div className="relative">
-                            <button
-                                onClick={() => setIsProfileOpen(!isProfileOpen)}
-                                className="flex items-center space-x-2 p-2 text-gray-600 hover:text-blue-600 hover:bg-gray-100 rounded-full transition-colors duration-200"
-                            >
-                                <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
-                                    <FaUser className="text-white" size={14} />
-                                </div>
-                            </button>
+  return (
+    <header className="sticky top-0 z-40 border-b border-slate-200/80 bg-white/80 backdrop-blur-md">
+      <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
+        <button
+          type="button"
+          onClick={() => navigate("/")}
+          className="flex items-center gap-2 rounded-lg transition-opacity hover:opacity-90"
+        >
+          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 shadow-sm">
+            <span className="font-display text-base font-bold text-white">B</span>
+          </div>
+          <span className="font-display text-lg font-bold tracking-tight text-slate-800">
+            Blogger
+          </span>
+        </button>
 
-                            {/* Dropdown Menu */}
-                            {isProfileOpen && (
-                                <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
-                                    <div className="px-4 py-2 border-b border-gray-100">
-                                        <p className="text-sm font-medium text-gray-900">Your Account</p>
-                                        <p className="text-xs text-gray-500">Manage your profile</p>
-                                    </div>
-                                    
-                                    <button
-                                        onClick={() => navigate('/profile')}
-                                        className="flex items-center space-x-3 w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
-                                    >
-                                        <FaUser size={14} />
-                                        <span>Profile</span>
-                                    </button>
-                                    
-                                    <button
-                                        onClick={() => navigate('/')}
-                                        className="flex items-center space-x-3 w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
-                                    >
-                                        <FaCog size={14} />
-                                        <span>Settings</span>
-                                    </button>
-                                    
-                                    <div className="border-t border-gray-100 mt-1 pt-1">
-                                        <button
-                                            onClick={handleSignOut}
-                                            className="flex items-center space-x-3 w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
-                                        >
-                                            <FaSignOutAlt size={14} />
-                                            <span>Sign Out</span>
-                                        </button>
-                                    </div>
-                                </div>
-                            )}
-                        </div>
-                    </div>
-                </div>
-
-                {/* Mobile Search */}
-                <div className="md:hidden mt-3">
-                    <div className="relative">
-                        <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-                        <input
-                            type="text"
-                            placeholder="Search stories..."
-                            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50"
-                        />
-                    </div>
-                </div>
-           
+        <div className="hidden flex-1 max-w-md justify-center md:flex">
+          <div className="relative w-full">
+            <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={14} />
+            <input
+              type="text"
+              placeholder="Search stories..."
+              className="w-full rounded-full border border-slate-200 bg-slate-50 py-2 pl-9 pr-4 text-sm outline-none transition-colors placeholder:text-slate-400 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20"
+            />
+          </div>
         </div>
-    );
+
+        <div className="flex items-center gap-2">
+          {!isLoggedIn ? (
+            <button
+              type="button"
+              onClick={() => navigate("/signin")}
+              className="rounded-lg bg-gradient-to-r from-blue-500 to-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:shadow-md"
+            >
+              Sign in
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={() => navigate("/write")}
+              className="flex items-center gap-2 rounded-full bg-gradient-to-r from-blue-500 to-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:shadow-md"
+            >
+              <TfiWrite size={14} />
+              <span className="hidden sm:inline">Write</span>
+            </button>
+          )}
+
+          <button
+            type="button"
+            className="rounded-full p-2 text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700"
+          >
+            <FaBell size={16} />
+          </button>
+
+          <div className="relative" ref={dropdownRef}>
+            <button
+              type="button"
+              onClick={() => setIsProfileOpen(!isProfileOpen)}
+              className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 text-white shadow-sm transition-opacity hover:opacity-90"
+            >
+              <FaUser size={12} />
+            </button>
+
+            {isProfileOpen && (
+              <div className="absolute right-0 mt-2 w-52 overflow-hidden rounded-xl border border-slate-200 bg-white py-2 shadow-lg">
+                <div className="border-b border-slate-100 px-4 py-3">
+                  <p className="text-sm font-medium text-slate-900">Your account</p>
+                  <p className="text-xs text-slate-500">Manage your profile</p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => { navigate("/profile"); setIsProfileOpen(false); }}
+                  className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50"
+                >
+                  <FaUser size={14} />
+                  Profile
+                </button>
+                <button
+                  type="button"
+                  onClick={() => { navigate("/"); setIsProfileOpen(false); }}
+                  className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50"
+                >
+                  <FaCog size={14} />
+                  Settings
+                </button>
+                <div className="border-t border-slate-100 pt-1">
+                  <button
+                    type="button"
+                    onClick={handleSignOut}
+                    className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50"
+                  >
+                    <FaSignOutAlt size={14} />
+                    Sign out
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      <div className="mx-4 mb-2 md:hidden">
+        <div className="relative">
+          <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={14} />
+          <input
+            type="text"
+            placeholder="Search stories..."
+            className="w-full rounded-full border border-slate-200 bg-slate-50 py-2 pl-9 pr-4 text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20"
+          />
+        </div>
+      </div>
+    </header>
+  );
 }

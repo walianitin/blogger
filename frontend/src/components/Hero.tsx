@@ -1,23 +1,29 @@
 import { useNavigate } from "react-router-dom";
 
-
 export default function Hero() {
-    const Navigate=useNavigate()
-    return (
-        <div className=" h-300 mt-30 whitespace-nowrap  flex flex-col justify-center items-center  font-medium  text-7xl ">
-                <div className=" max-w-5xl flex flex-col gap-2 mt-20 pt-20 text-shadow-[0_35px_35px_rgb(10_10_2_/_0.25)] ">
-                 <button className=" w-fit left-80 text-lg bg-blue-500 opacity-70 text-center  rounded-md  px-4 py-2  text-white hover:bg-blue-600  "><p className="drop-shadow-sm text-shadow-lg bg-transparent -top-20" onClick={()=>Navigate("/explore")}>Explore more ..</p></button>      
- <div className="blur-xl"></div>
-
-                    <h1 className=" ">Human stories & ideas</h1>
-<p className="text-xl whitespace-nowrap font-mono text-blue-600 ">
-    A place to read, write, and deepen your understanding
-</p> 
-    
- <div className="blur-xl"></div>
-            <img src="/blogging.webp" height={120} width={1500} className=" hover:opacity-55 opacity-30 transition-opacity duration-300"></img>
-                </div>
-               
-        </div>
-    )
+  const navigate = useNavigate();
+  return (
+    <section className="mx-auto flex max-w-5xl flex-col items-center px-4 py-16 sm:py-24">
+      <h1 className="font-display text-4xl font-bold tracking-tight text-slate-800 sm:text-5xl md:text-6xl">
+        Human stories & ideas
+      </h1>
+      <p className="mt-4 max-w-xl text-center text-lg text-slate-600 sm:text-xl">
+        A place to read, write, and deepen your understanding
+      </p>
+      <button
+        type="button"
+        onClick={() => navigate("/explore")}
+        className="mt-8 rounded-full bg-gradient-to-r from-blue-500 to-indigo-600 px-6 py-3 text-base font-semibold text-white shadow-md transition-all hover:shadow-lg"
+      >
+        Explore stories
+      </button>
+      <div className="mt-12 w-full max-w-4xl overflow-hidden rounded-2xl border border-slate-200/60 bg-slate-50/50 shadow-inner">
+        <img
+          src="/blogging.webp"
+          alt=""
+          className="w-full object-cover opacity-90 transition-opacity hover:opacity-100"
+        />
+      </div>
+    </section>
+  );
 }   
