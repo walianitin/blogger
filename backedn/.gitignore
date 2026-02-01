@@ -31,3 +31,8 @@ lerna-debug.log*
 
 # misc
 .DS_Store
+
+# Compiled JS (TypeScript source is .ts)
+src/**/*.js
+lib/**/*.js
+prisma/seed.js

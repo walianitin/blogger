@@ -7,7 +7,7 @@ interface BlogPost {
     content: string;
 }
 
-const backend_url = "https://backedn.walianitin406.workers.dev"
+const backend_url = "https://worker-name.walianitin406.workers.dev"
 
 export default function Write() {
     const [blogPost, setBlogPost] = useState<BlogPost>({

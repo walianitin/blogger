@@ -18,7 +18,7 @@ interface Blog {
     url: string;
 }
 
-const backend_url = "https://backedn.walianitin406.workers.dev";
+const backend_url = "https://worker-name.walianitin406.workers.dev";
 
 // Single long dummy post shown to guests when API returns no posts
 const DUMMY_POSTS: Blog[] = [

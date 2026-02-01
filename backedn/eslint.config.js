@@ -59,19 +59,13 @@ export default [
     },
   },
   {
-    files: ['**/*.js'],
-    languageOptions: {
-      ecmaVersion: 'latest',
-      sourceType: 'module',
-    },
-  },
-  {
     ignores: [
       'node_modules/**',
       'dist/**',
       'build/**',
       '.wrangler/**',
       'prisma/migrations/**',
+      '**/*.js',
     ],
   },
 ]

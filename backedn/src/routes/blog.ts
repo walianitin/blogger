@@ -39,7 +39,7 @@ blogRouter.get('/bulk', async c => {
   return c.json({ posts })
 })
 
-blogRouter.use('/*', async (c, next: any) => {
+blogRouter.use('/*', async (c, next: () => Promise<void>) => {
   const authHeader = c.req.header('Authorization') || ''
   console.log(c.req.header)
   if (!authHeader)
@@ -162,12 +162,12 @@ blogRouter.put('/update', async c => {
       id: post.id,
       message: 'update are successfully done',
     })
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error('Error during post update:', err)
     c.status(500)
     return c.json({
       message: 'Something went wrong, unable to update the post.',
-      error: err.message, // Optionally send the error message
+      error: err instanceof Error ? err.message : String(err),
     })
   }
 })
